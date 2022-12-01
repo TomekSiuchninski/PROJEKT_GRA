@@ -1,0 +1,3 @@
+# INFORMATYKA_2022_2023_PROJEKT
+ 
+read me pls
