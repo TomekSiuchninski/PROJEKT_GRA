@@ -1,2 +1,2 @@
 ﻿  Źródło.cpp
-  PROJEKT_GRA.vcxproj -> C:\Users\tomek\source\repos\PROJEKT_GRA\x64\Debug\PROJEKT_GRA.exe
+C:\Users\tomek\source\repos\PROJEKT_GRA\PROJEKT_GRA\Źródło.cpp(1,10): fatal error C1083: Nie można otworzyć pliku dołącz: 'SFML/Graphics.hpp': No such file or directory
