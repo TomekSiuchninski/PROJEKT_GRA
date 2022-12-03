@@ -1,3 +1,7 @@
+//https://www.freefontspro.com/41086/the-ultimate-pixel-font.ttf
+
+
+
 #include <SFML/Graphics.hpp>
 
 #include "menu.h"
@@ -7,16 +11,17 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1280, 720), "SFML works!");
+	sf::RenderWindow window(sf::VideoMode(1280, 720), "GIERECZKA TOMECZKA");
 
 
 	keyboard keyboard_;
 	menu menu_;
+	menu_.get_window(&window);
 
 	void(keyboard:: * wsk_klaw)(sf::Event, menu);
 	wsk_klaw = &keyboard::menu;
 
-	
+
 
 	while (window.isOpen())
 	{
@@ -34,10 +39,6 @@ int main()
 
 
 
-
-
-		window.clear();
-		window.display();
 	}
 	return 0;
 }
