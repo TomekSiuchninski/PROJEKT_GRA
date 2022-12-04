@@ -5,13 +5,8 @@
 #include "keyboard.h"
 #include "menu.h"
 
-
-
-
 int main()
 {
-
-
 	keyboard keyboard_;
 	menu_klasa menu_;
 	void(keyboard:: * wsk_klaw)(sf::Event, menu_klasa*);

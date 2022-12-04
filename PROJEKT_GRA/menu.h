@@ -6,26 +6,28 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-
-	class menu_klasa {
-	public:
-		menu_klasa();
-		void get_window(sf::RenderWindow* window);
-		void up(void);
-		void down(void);
-		void enter(void);
-	private:
-		sf::RenderWindow* OKNO;
-		int indeks;
-		std::string tabela[5] = {
-			"Nowa gra",
-			"Wczytaj gre",
-			"Ranking graczy",
-			"Pomoc",
-			"Koniec gry"
-		};
-		void wyswietl_menu(void);
+class menu_klasa {
+public:
+	menu_klasa();
+	void get_window(sf::RenderWindow* window);
+	void up(void);
+	void down(void);
+	void enter(void);
+	void litera(int lit);
+private:
+	sf::RenderWindow* OKNO;
+	int indeks;
+	std::string nick;
+	std::string tabela[5] = {
+		"Nowa gra",
+		"Wczytaj gre",
+		"Ranking graczy",
+		"Pomoc",
+		"Koniec gry"
 	};
+	void wyswietl_menu(void);
+	void rysuj_wprowadzanie_nicku(void);
+};
 
 
 

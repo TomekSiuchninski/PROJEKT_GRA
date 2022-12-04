@@ -2,16 +2,20 @@
 
 
 void keyboard::menu(sf::Event event, menu_klasa* men){
+
 	if (event.type == sf::Event::KeyPressed)
 	{
-		if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
+		if (event.key.code == sf::Keyboard::Up) {
 			men->up();
 		}
-		if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+		else if (event.key.code == sf::Keyboard::Down) {
 			men->down();
 		}
-		if (event.key.code == sf::Keyboard::Enter) {
+		else if (event.key.code == sf::Keyboard::Enter) {
 			men->enter();
+		}
+		else if ( (event.key.code >= sf::Keyboard::A && event.key.code <= sf::Keyboard::Z) || event.key.code== sf::Keyboard::Backspace) {
+			men->litera(event.key.code);
 		}
 
 	}
