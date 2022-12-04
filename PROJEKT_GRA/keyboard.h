@@ -6,29 +6,10 @@
 
 #include "menu.h"
 
+ 
+
+
 class keyboard{
 public:
-	void menu(sf::Event event, menu meni) {
-		if (event.type == sf::Event::KeyPressed)
-		{
-			if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
-				meni.up();
-			}
-
-
-			if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-				meni.down();
-			}
-
-
-			if (event.key.code == sf::Keyboard::Enter) {
-				meni.enter();
-			}
-
-		}
-
-
-	}
-
+	void menu(sf::Event event, menu_klasa* men);
 };
-
