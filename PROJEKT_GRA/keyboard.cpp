@@ -1,7 +1,8 @@
 #include "keyboard.h"
-
+#include "global.h"
 
 void keyboard::menu(sf::Event event, menu_klasa* men){
+
 
 	if (event.type == sf::Event::KeyPressed)
 	{

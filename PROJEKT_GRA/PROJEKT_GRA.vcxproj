@@ -142,13 +142,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gra.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="Źródło.cpp" />
+    <ClCompile Include="global.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gra.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="global.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
