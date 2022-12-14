@@ -1,8 +1,9 @@
 ﻿  gra.cpp
-  Źródło.cpp
+C:\Users\tomek\source\repos\PROJEKT_GRA\PROJEKT_GRA\gra.cpp(128,26): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\tomek\source\repos\PROJEKT_GRA\PROJEKT_GRA\gra.cpp(129,26): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
   Trwa generowanie kodu
-  7 of 128 functions ( 5.5%) were compiled, the rest were copied from previous compilation.
+  5 of 149 functions ( 3.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    3 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu
   PROJEKT_GRA.vcxproj -> C:\Users\tomek\source\repos\PROJEKT_GRA\x64\Release\PROJEKT_GRA.exe

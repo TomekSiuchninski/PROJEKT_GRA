@@ -24,3 +24,17 @@ void keyboard::menu(sf::Event event, menu_klasa* men){
 
 }
 
+void keyboard::gra(sf::Event event, gra_klasa* men) {
+	if (event.type == sf::Event::KeyPressed)
+	{
+		if (event.key.code == sf::Keyboard::Right) {
+			men->prawo();
+		}
+		else if (event.key.code == sf::Keyboard::Left) {
+			men->lewo();
+		}
+		else if (event.key.code == sf::Keyboard::Enter) {
+			men->enter();
+		}
+	}
+}
