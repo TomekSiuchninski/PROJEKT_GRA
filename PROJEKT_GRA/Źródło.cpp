@@ -21,7 +21,7 @@ int main()
 	gra_klasa gra(1, 1, 1, window);
 
 	sf::Clock zegar;
-	
+	sf::Clock zegar2;
 
 	
 
@@ -37,9 +37,17 @@ int main()
 			//(keyboard_.*wsk_klaw)(event, &menu_);
 		}
 
-		gra.update(window);
 
-		if (zegar.getElapsedTime().asMilliseconds() > 30) {
+
+		if (zegar2.getElapsedTime().asMilliseconds() > 30) {
+			zegar2.restart();
+			gra.update(window);
+
+		}
+
+
+
+		if (zegar.getElapsedTime().asMilliseconds() > 20) {
 			zegar.restart();
 			window.clear();
 			gra.display(window);
