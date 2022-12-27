@@ -32,6 +32,11 @@ public:
 	int life;
 };
 
+void gra_klasa::get_window(sf::RenderWindow* window) {
+	OKNO = window;
+}
+
+
 float blok::getx(void) {
 	return this->x;
 }
@@ -139,8 +144,8 @@ gra_klasa::gra_klasa(int trudnosc, int predkosc, int dlugosc, sf::RenderWindow& 
 	ball.tx.loadFromFile("pilka.png");
 	ball.x = 50;
 	ball.y = 50;
-	ball.vel.x = 12;
-	ball.vel.y = -6;
+	ball.vel.x = 12.0;
+	ball.vel.y = -6.0;
 	ball.spr.setTexture(ball.tx);
 }
 
@@ -167,6 +172,7 @@ void gra_klasa::update(sf::RenderWindow& window) {
 
 	ball.kolizja();
 
+	std::cout << ball.x << std::endl;
 
 }
 
@@ -188,3 +194,76 @@ void gra_klasa::lewo(void) {
 void gra_klasa::enter(void) {
 
 }
+
+
+
+void gra_klasa::wyswietl_pomoc(sf::RenderWindow* window) {
+	sf::Font font;
+	if (!font.loadFromFile("UltimatePixelFont.ttf"))
+	{
+		// error...
+	}
+
+	OKNO->clear();
+	sf::Text text;
+	text.setFont(font); // font is a sf::Font
+	text.setCharacterSize(50); // in pixels, not points!
+	text.setFillColor(sf::Color::Blue);
+
+	std::string t = "HIHIHI:";
+
+	text.setString(t);
+	text.setPosition(1080 / 2 - t.size() * 12, 220);
+	OKNO->draw(text);
+
+	text.setString("POMOC AJAJAJ");
+	text.setPosition(1280 / 2 - 10, 320);
+	OKNO->draw(text);
+
+	OKNO->display();
+	//GRA->update(*OKNO);
+}
+
+
+
+void gra_klasa::wyswietl_ranking(sf::RenderWindow* window) {
+	sf::Font font;
+	if (!font.loadFromFile("UltimatePixelFont.ttf"))
+	{
+		// error...
+	}
+
+	OKNO->clear();
+	sf::Text text;
+	text.setFont(font); // font is a sf::Font
+	text.setCharacterSize(80); // in pixels, not points!
+	text.setFillColor(sf::Color::Green);
+
+	std::string t = "LISTA KOKSOW PVP:";
+
+	text.setString(t);
+	text.setPosition(180 / 2 - t.size() * 12, 220);
+	OKNO->draw(text);
+
+	text.setString("AUU SZLALALA");
+	text.setPosition(1280 / 2 - 10, 420);
+	OKNO->draw(text);
+
+	OKNO->display();
+	//GRA->update(*OKNO);
+}
+
+void gra_klasa::on(void) {
+	this->start = 1;
+};
+void gra_klasa::off(void) {
+	this->start = 0;
+};
+
+void gra_klasa::F1(void) {
+	if (start) this->off();
+	else this->on();
+	std::cout << this->start;
+	wyswietl_pomoc(OKNO);
+}
+

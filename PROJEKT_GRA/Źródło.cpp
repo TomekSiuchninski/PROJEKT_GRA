@@ -15,10 +15,12 @@ int main()
 	
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "GIERECZKA TOMECZKA");
 
-	menu_.get_window(&window);
+	gra_klasa gra(1, 1, 1, window);
+	menu_.get_window(&window, &gra);
+	gra.get_window(&window);
 	//wsk_klaw = &keyboard::menu;
 	//wsk_klaw = &keyboard::gra;
-	gra_klasa gra(1, 1, 1, window);
+	
 
 	sf::Clock zegar;
 	sf::Clock zegar2;
@@ -32,28 +34,27 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-			//keyboard_.menu(event, &menu_);
-			keyboard_.gra(event, &gra);
+			if (!gra.start)keyboard_.menu(event, &menu_);
+			if (gra.start) keyboard_.gra(event, &gra);
 			//(keyboard_.*wsk_klaw)(event, &menu_);
 		}
 
 
+		if (gra.start) {
+			if (zegar2.getElapsedTime().asMilliseconds() > 20) {
+				zegar2.restart();
+				gra.update(window);
 
-		if (zegar2.getElapsedTime().asMilliseconds() > 30) {
-			zegar2.restart();
-			gra.update(window);
+			}
+			if (zegar.getElapsedTime().asMilliseconds() > 20) {
+				zegar.restart();
+				window.clear();
+				gra.display(window);
+				window.display();
 
+			}
 		}
 
-
-
-		if (zegar.getElapsedTime().asMilliseconds() > 20) {
-			zegar.restart();
-			window.clear();
-			gra.display(window);
-			window.display();
-			
-		}
 		
 	}
 	return 0;
