@@ -17,6 +17,8 @@ public:
 	void down(void);
 	void enter(void);
 	void litera(int lit);
+	void menu_reset(void);
+	void wyswietl_menu(void);
 private:
 	sf::RenderWindow* OKNO;
 	gra_klasa* GRA;
@@ -30,7 +32,6 @@ private:
 		"Pomoc",
 		"Koniec gry"
 	};
-	void wyswietl_menu(void);
 	void rysuj_wprowadzanie_nicku(void);
 	void rysuj_wybor_trudnosci(void);
 	int poziom_trudnosci;

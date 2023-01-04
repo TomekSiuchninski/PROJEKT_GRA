@@ -36,8 +36,14 @@ void keyboard::gra(sf::Event event, gra_klasa* men) {
 		else if (event.key.code == sf::Keyboard::Enter) {
 			men->enter();
 		}
+		else if (event.key.code == sf::Keyboard::Space) {
+			men->space();
+		}
 		else if (event.key.code == sf::Keyboard::F1) {
 			men->F1();
+		}
+		else if (event.key.code == sf::Keyboard::Escape) {
+			men->Escape();
 		}
 	}
 }

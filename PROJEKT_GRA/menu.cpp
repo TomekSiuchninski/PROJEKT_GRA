@@ -7,9 +7,6 @@ namespace mnu{
 	}
 }
 
-
-
-
 menu_klasa::menu_klasa() {
 
 }
@@ -53,6 +50,9 @@ void menu_klasa::enter(void) {
 		OKNO->close();
 	}
 
+	if (indeks1 == mnu::kontynuuj && indeks2 == 0) {
+		GRA->on(2);
+	}
 
 	if (indeks1 == mnu::nowa_gra && indeks2==0) {
 		indeks2 = 1;
@@ -64,7 +64,8 @@ void menu_klasa::enter(void) {
 		rysuj_wybor_trudnosci();
 	}
 	else if (indeks1 == mnu::nowa_gra && indeks2 == 2) {
-		GRA->on();
+		
+		GRA->start_gry(poziom_trudnosci);
 	}
 
 	if (indeks1 == mnu::pomoc && indeks2 == 0) {
@@ -102,6 +103,12 @@ void menu_klasa::litera(int lit) {
 }
 
 void menu_klasa::wyswietl_menu(void) {
+	sf::Sprite tlo;
+	sf::Texture tx;
+	tx.loadFromFile("main.png");
+	tlo.setTexture(tx);
+	
+
 	sf::Font font;
 	if (!font.loadFromFile("UltimatePixelFont.ttf"))
 	{
@@ -109,6 +116,7 @@ void menu_klasa::wyswietl_menu(void) {
 	}
 
 	OKNO->clear();
+	OKNO->draw(tlo);
 	sf::Text text;
 	text.setFont(font); // font is a sf::Font
 	text.setCharacterSize(50); // in pixels, not points!
@@ -130,7 +138,11 @@ void menu_klasa::wyswietl_menu(void) {
 }
 
 void menu_klasa::rysuj_wprowadzanie_nicku(void) {
-
+	sf::Sprite tlo;
+	sf::Texture tx;
+	tx.loadFromFile("main.png");
+	tlo.setTexture(tx);
+	
 
 	sf::Font font;
 	if (!font.loadFromFile("UltimatePixelFont.ttf"))
@@ -139,6 +151,7 @@ void menu_klasa::rysuj_wprowadzanie_nicku(void) {
 	}
 
 	OKNO->clear();
+	OKNO->draw(tlo);
 	sf::Text text;
 	text.setFont(font); // font is a sf::Font
 	text.setCharacterSize(80); // in pixels, not points!
@@ -168,8 +181,14 @@ void menu_klasa::rysuj_wybor_trudnosci(void) {
 	{
 		// error...
 	}
+	sf::Sprite tlo;
+	sf::Texture tx;
+	tx.loadFromFile("main.png");
+	tlo.setTexture(tx);
+	
 
 	OKNO->clear();
+	OKNO->draw(tlo);
 	sf::Text text;
 	text.setFont(font); // font is a sf::Font
 	text.setCharacterSize(80); // in pixels, not points!
@@ -181,7 +200,7 @@ void menu_klasa::rysuj_wybor_trudnosci(void) {
 	text.setPosition(1280 / 2 - t.size() * 18 - 50 , 40);
 	OKNO->draw(text);
 
-	sf::Texture tx;
+	//sf::Texture tx;
 	tx.loadFromFile("blok_drewno.png");
 	sf::Sprite sp;
 	sp.setTexture(tx);
@@ -220,3 +239,9 @@ void menu_klasa::rysuj_wybor_trudnosci(void) {
 	OKNO->display();
 	//GRA->update(*OKNO);
 }
+
+void menu_klasa::menu_reset(void) {
+	this->indeks1 = 0;
+	this->indeks2 = 0;
+}
+

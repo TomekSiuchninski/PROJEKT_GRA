@@ -1,8 +1,11 @@
 #include "gra.h"
 
-#include <iostream>
 
-#define WINDOW_X 1280
+
+#include <iostream>
+#include <cmath>
+
+#define WINDOW_X 1050
 #define WINDOW_Y 720
 #define BALL_R 15
 #define BLOK_X 120
@@ -24,16 +27,23 @@ public:
 
 //private:
 	sf::Texture tx;
+	sf::Texture tx_br;
 	sf::Sprite spr;
+	sf::Sprite spr_br;
 	int N;
 	int status;
 	float x;
 	float y;
-	int life;
+	float life;
+	float max_life;
+	float x_mem;
+	float y_mem;
+
 };
 
 void gra_klasa::get_window(sf::RenderWindow* window) {
 	OKNO = window;
+
 }
 
 
@@ -59,6 +69,8 @@ public:
 	void kolizja(void);
 //private:
 	sf::Vector2f vel;
+	sf::Vector2f vel_mem;
+	float speed;
 	float x;
 	float y;
 
@@ -106,11 +118,13 @@ void pilka::kolizja(void) {
 			if (cy - BALL_R > y2 && cy + this->vel.y - BALL_R <= y2) {
 				this->vel.y = -this->vel.y;
 			}
-			blocks[i].life--;
+			if(i!=PLATFORMA) blocks[i].life--;
 		}
 	}
 	if (this->y > WINDOW_Y) {
-		this->vel.y = -this->vel.y;
+		//this->vel.y = -this->vel.y;
+		blocks[PLATFORMA].status = 0;
+		blocks[PLATFORMA].life--;
 	}
 }
 
@@ -126,27 +140,10 @@ blok::blok(int trudnosc, sf::RenderWindow& window) {
 }
 
 
-gra_klasa::gra_klasa(int trudnosc, int predkosc, int dlugosc, sf::RenderWindow& window) {
+gra_klasa::gra_klasa() {
 
 
-
-	for (int i = 0; i < 32; i++) {
-
-		blocks[i].tx.loadFromFile("blok2.png");
-		blocks[i].setx((i % 8) * 130+10);
-		blocks[i].sety((i / 8) * 70+10);
-		blocks[i].spr.setPosition(blocks[i].getx(), blocks[i].gety());
-		blocks[i].spr.setTexture(blocks[i].tx);
-		blocks[i].life = 1;
-
-	}
-
-	ball.tx.loadFromFile("pilka.png");
-	ball.x = 50;
-	ball.y = 50;
-	ball.vel.x = 12.0;
-	ball.vel.y = -6.0;
-	ball.spr.setTexture(ball.tx);
+	
 }
 
 void blok::rysuj(sf::RenderWindow& window) {
@@ -157,45 +154,179 @@ void blok::rysuj(sf::RenderWindow& window) {
 }
 
 void gra_klasa::update(sf::RenderWindow& window) {
-
+	if(start == 1) czas_gry++;
 	blocks[PLATFORMA].tx.loadFromFile("platforma.png");
 	blocks[PLATFORMA].spr.setTexture(blocks[PLATFORMA].tx);
 	blocks[PLATFORMA].sety(600);
 	blocks[PLATFORMA].spr.setPosition(blocks[PLATFORMA].x, blocks[PLATFORMA].y);
 
-	ball.x+=ball.vel.x;
-	ball.y+=ball.vel.y;
+
+	//std::cout << blocks[PLATFORMA].status << std::endl;
+
+	if (blocks[PLATFORMA].status == 0) {
+		ball.x = blocks[PLATFORMA].x + PLATFORMA_X / 2 - BALL_R;
+		ball.y = blocks[PLATFORMA].y - 2*BALL_R;
+		//std::cout << (WINDOW_X / 2 - (blocks[PLATFORMA].x + PLATFORMA_X / 2 - BALL_R)) << std::endl;
+		ball.vel.x = 0.03*(WINDOW_X/2 - (blocks[PLATFORMA].x + PLATFORMA_X / 2 - BALL_R) ) ;
+		
+		ball.vel.y =-sqrt(ball.speed* ball.speed - ball.vel.x* ball.vel.x);
+	}
+	else {
+		ball.x += ball.vel.x;
+		ball.y += ball.vel.y;
+	}
+
 	//std::cout << ball.x<<std::endl;
-
-
 	ball.spr.setPosition(ball.x, ball.y);
 
 	ball.kolizja();
+	sf::Texture d1;
+	sf::Texture d2;
+	sf::Texture d3;
+	sf::Texture d4;
+	d1.loadFromFile("d1.png");
+	d2.loadFromFile("d2.png");
+	d3.loadFromFile("d3.png");
+	d4.loadFromFile("d4.png");
 
-	std::cout << ball.x << std::endl;
+
+	for (int i = 0; i < 32; i++) {
+
+
+		if (blocks[0].max_life == 2) {
+			if (blocks[i].life == 2) blocks[i].tx_br = blocks[i].tx;
+			if (blocks[i].life == 1) blocks[i].tx_br = d3;
+		}
+		else if (blocks[0].max_life == 3) {
+			if (blocks[i].life == 3) blocks[i].tx_br = blocks[i].tx;
+			if (blocks[i].life == 2) blocks[i].tx_br = d2;
+			if (blocks[i].life == 1) blocks[i].tx_br = d4;
+		}
+		else if (blocks[0].max_life == 4) {
+			if (blocks[i].life == 4) blocks[i].tx_br = blocks[i].tx;
+			if (blocks[i].life == 3) blocks[i].tx_br = d1;
+			if (blocks[i].life == 2) blocks[i].tx_br = d2;
+			if (blocks[i].life == 1) blocks[i].tx_br = d3;
+		}
+		blocks[i].spr_br.setTexture(blocks[i].tx_br);
+
+	}
+	//std::cout << ball.x << std::endl;
+	if (blocks[PLATFORMA].life <0) {
+		przegrana();
+	}
+	int check = 32;
+	for (int i = 0; i < 32; i++) if (blocks[i].life == 0) check--;
+	if(!check) wygrana();
+
 
 }
 
 void gra_klasa::display(sf::RenderWindow& window) {
+	//std::cout << start << std::endl;
+	sf::Sprite tlo;
+	sf::Texture tx;
+
+	tx.loadFromFile("game.png");
+	tlo.setTexture(tx);
+	OKNO->draw(tlo);
 	for (int i = 0; i < 32; i++) {
-		if(blocks[i].life) window.draw(blocks[i].spr);
+		if (blocks[i].life) {
+			window.draw(blocks[i].spr);
+			window.draw(blocks[i].spr_br);
+		}
 	}
 	window.draw(ball.spr);
 	window.draw(blocks[PLATFORMA].spr);
+
+	sf::Font font;
+	if (!font.loadFromFile("UltimatePixelFont.ttf"))
+	{
+		// error...
+	}
+
+
+
+	sf::Sprite serce;
+	sf::Texture txt;
+	txt.loadFromFile("serce.png");
+	
+	serce.setTexture(txt);
+	serce.setScale(0.15f, 0.15f);
+
+	for (int i = 0; i < blocks[PLATFORMA].life; i++) {
+		serce.setPosition(1075 + i * 70, 620);
+		OKNO->draw(serce);
+	}
+	sf::Text text;
+	text.setFont(font); // font is a sf::Font
+	text.setCharacterSize(40); // in pixels, not points!
+	text.setFillColor(sf::Color::Magenta);
+
+	std::string t = "Szanse:";
+
+	text.setString(t);
+	text.setPosition(1095, 555);
+	OKNO->draw(text);
+
+	int s = czas_gry / 50;
+
+	int dig4 = s % 10;
+	int dig3 = (s / 10) % 6;
+	int dig2 = (s / 60) % 10;
+
+
+	//std::cout << s << std::endl;
+	t = std::to_string(dig2) + ":"+ std::to_string(dig3) + std::to_string(dig4);
+	text.setPosition(1125, 180);
+	text.setString(t);
+	OKNO->draw(text);
+
+	t = "Czas gry:";
+	text.setPosition(1085, 120);
+	text.setString(t);
+	OKNO->draw(text);
+
+
+	if (start == 2) wyswietl_pomoc(OKNO);
+	if (start == 3) wyswietl_escape(OKNO);
 }
 
 void gra_klasa::prawo(void) {
-	blocks[PLATFORMA].x+=30;
+	if(blocks[PLATFORMA].x< WINDOW_X - PLATFORMA_X ) blocks[PLATFORMA].x+=30;
 }
 void gra_klasa::lewo(void) {
-	blocks[PLATFORMA].x-=30;
+	if (blocks[PLATFORMA].x) blocks[PLATFORMA].x-=30;
 }
-
+void gra_klasa::Escape(void) {
+	if (start == 1 || start==2) {
+		this->start = 3;
+		ball.vel_mem = ball.vel;
+		ball.vel.x = 0;
+		ball.vel.y = 0;
+		blocks[PLATFORMA].x_mem = blocks[PLATFORMA].x;
+		blocks[PLATFORMA].y_mem = blocks[PLATFORMA].y;
+	}
+	else if (start == 3) {
+		this->start = 1;
+		ball.vel = ball.vel_mem;
+		blocks[PLATFORMA].x = blocks[PLATFORMA].x_mem;
+		blocks[PLATFORMA].y = blocks[PLATFORMA].y_mem;
+	}
+	std::cout << this->start;
+}
 void gra_klasa::enter(void) {
 
+	if (start == 3) {
+		start = 4;
+		
+	}
+	std::cout << start << std::endl;
 }
 
-
+void gra_klasa::space(void) {
+	if (blocks[PLATFORMA].status == 0 && blocks[PLATFORMA].life>=0 ) blocks[PLATFORMA].status = 1;
+}
 
 void gra_klasa::wyswietl_pomoc(sf::RenderWindow* window) {
 	sf::Font font;
@@ -204,7 +335,13 @@ void gra_klasa::wyswietl_pomoc(sf::RenderWindow* window) {
 		// error...
 	}
 
+	sf::Sprite tlo;
+	sf::Texture tx;
+	tx.loadFromFile("main.png");
+	tlo.setTexture(tx);
+
 	OKNO->clear();
+	OKNO->draw(tlo);
 	sf::Text text;
 	text.setFont(font); // font is a sf::Font
 	text.setCharacterSize(50); // in pixels, not points!
@@ -220,13 +357,18 @@ void gra_klasa::wyswietl_pomoc(sf::RenderWindow* window) {
 	text.setPosition(1280 / 2 - 10, 320);
 	OKNO->draw(text);
 
-	OKNO->display();
+	//OKNO->display();
 	//GRA->update(*OKNO);
 }
 
 
 
 void gra_klasa::wyswietl_ranking(sf::RenderWindow* window) {
+	sf::Sprite tlo;
+	sf::Texture tx;
+	tx.loadFromFile("main.png");
+	tlo.setTexture(tx);
+	
 	sf::Font font;
 	if (!font.loadFromFile("UltimatePixelFont.ttf"))
 	{
@@ -234,15 +376,16 @@ void gra_klasa::wyswietl_ranking(sf::RenderWindow* window) {
 	}
 
 	OKNO->clear();
+	OKNO->draw(tlo);
 	sf::Text text;
 	text.setFont(font); // font is a sf::Font
 	text.setCharacterSize(80); // in pixels, not points!
 	text.setFillColor(sf::Color::Green);
 
-	std::string t = "LISTA KOKSOW PVP:";
+	std::string t = "LISTA KOXOW PVP:";
 
 	text.setString(t);
-	text.setPosition(180 / 2 - t.size() * 12, 220);
+	text.setPosition(50, 220);
 	OKNO->draw(text);
 
 	text.setString("AUU SZLALALA");
@@ -253,17 +396,130 @@ void gra_klasa::wyswietl_ranking(sf::RenderWindow* window) {
 	//GRA->update(*OKNO);
 }
 
-void gra_klasa::on(void) {
-	this->start = 1;
-};
-void gra_klasa::off(void) {
-	this->start = 0;
-};
+void gra_klasa::wyswietl_escape(sf::RenderWindow* window) {
+	sf::Sprite tlo;
+	sf::Texture tx;
+	tx.loadFromFile("main.png");
+	tlo.setTexture(tx);
 
-void gra_klasa::F1(void) {
-	if (start) this->off();
-	else this->on();
-	std::cout << this->start;
-	wyswietl_pomoc(OKNO);
+	sf::Font font;
+	if (!font.loadFromFile("UltimatePixelFont.ttf"))
+	{
+		// error...
+	}
+
+	OKNO->clear();
+	OKNO->draw(tlo);
+	sf::Text text;
+	text.setFont(font); // font is a sf::Font
+	text.setCharacterSize(80); // in pixels, not points!
+	text.setFillColor(sf::Color::Green);
+
+	std::string t = "WYCHODZISZ?:";
+
+	text.setString(t);
+	text.setPosition(50, 220);
+	OKNO->draw(text);
+
+	text.setString("AUU SZLALALA");
+	text.setPosition(1280 / 2 - 10, 420);
+	OKNO->draw(text);
+
+	//OKNO->display();
 }
 
+
+
+
+void gra_klasa::on(int st) {
+	this->start = st;
+};
+
+
+void gra_klasa::F1(void) {
+	if (start == 1) {
+		this->start = 2;
+		ball.vel_mem = ball.vel;
+		ball.vel.x = 0;
+		ball.vel.y = 0;
+		blocks[PLATFORMA].x_mem = blocks[PLATFORMA].x;
+		blocks[PLATFORMA].y_mem = blocks[PLATFORMA].y;
+	}
+	else if (start == 2) {
+		this->start = 1;
+		ball.vel = ball.vel_mem;
+		blocks[PLATFORMA].x = blocks[PLATFORMA].x_mem;
+		blocks[PLATFORMA].y = blocks[PLATFORMA].y_mem;
+	}
+	std::cout << this->start;
+	
+}
+
+// 0 - menu    1 - gra    2 - stop 3- escape
+
+void gra_klasa::start_gry(int trudnosc) {
+	on(1);
+	czas_gry = 0;
+	blocks[0].max_life = trudnosc+2;
+
+
+	blocks[PLATFORMA].status = 0;
+	blocks[PLATFORMA].life = 3;
+	ball.tx.loadFromFile("pilka.png");
+	ball.spr.setTexture(ball.tx);
+
+
+
+
+
+	switch (trudnosc) {
+	case 0:
+		for (int i = 0; i < 32; i++) {
+			blocks[i].tx.loadFromFile("blok_drewno.png");
+			blocks[i].setx((i % 8) * 130 + 10);
+			blocks[i].sety((i / 8) * 70 + 10);
+			blocks[i].spr.setPosition(blocks[i].getx(), blocks[i].gety());
+			blocks[i].spr_br.setPosition(blocks[i].getx(), blocks[i].gety());
+			blocks[i].spr.setTexture(blocks[i].tx);
+			blocks[i].life = 2;
+			ball.speed = 13;
+		}
+		break;
+	case 1:
+		for (int i = 0; i < 32; i++) {
+			blocks[i].tx.loadFromFile("blok_kamien.png");
+			blocks[i].setx((i % 8) * 130 + 10);
+			blocks[i].sety((i / 8) * 70 + 10);
+			blocks[i].spr.setPosition(blocks[i].getx(), blocks[i].gety());
+			blocks[i].spr_br.setPosition(blocks[i].getx(), blocks[i].gety());
+			blocks[i].spr.setTexture(blocks[i].tx);
+			blocks[i].life = 3;
+			ball.speed = 17;
+		}
+		break;
+	case 2:
+		for (int i = 0; i < 32; i++) {
+			blocks[i].tx.loadFromFile("blok_metal.png");
+			blocks[i].setx((i % 8) * 130 + 10);
+			blocks[i].sety((i / 8) * 70 + 10);
+			blocks[i].spr.setPosition(blocks[i].getx(), blocks[i].gety());
+			blocks[i].spr_br.setPosition(blocks[i].getx(), blocks[i].gety());
+			blocks[i].spr.setTexture(blocks[i].tx);
+			blocks[i].life = 4;
+			ball.speed = 22;
+		}
+		break;
+	}
+
+
+}
+
+void gra_klasa::wygrana(void) {
+	on(5);
+	std::cout << "WYGRANA" << std::endl;
+}
+
+void gra_klasa::przegrana(void) {
+	on(5);
+	std::cout << "PRZEGRANA" << std::endl;
+}
