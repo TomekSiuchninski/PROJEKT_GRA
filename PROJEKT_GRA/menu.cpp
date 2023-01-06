@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "ranking.h"
 
 namespace mnu{
 	enum { nowa_gra, kontynuuj, ranking, pomoc, koniec };
@@ -46,15 +47,20 @@ void menu_klasa::down(void) {
 
 }
 void menu_klasa::enter(void) {
-	if (indeks1 == mnu::koniec && indeks2 == 0) {
+	if (indeks1 == -1) {
+		indeks1 = mnu::nowa_gra;
+		wyswietl_menu();
+
+	}
+	else if (indeks1 == mnu::koniec && indeks2 == 0) {
 		OKNO->close();
 	}
 
-	if (indeks1 == mnu::kontynuuj && indeks2 == 0) {
-		GRA->on(2);
+	else if (indeks1 == mnu::kontynuuj && indeks2 == 0) {
+		GRA->on(idx::stop);
 	}
 
-	if (indeks1 == mnu::nowa_gra && indeks2==0) {
+	else if (indeks1 == mnu::nowa_gra && indeks2==0) {
 		indeks2 = 1;
 		rysuj_wprowadzanie_nicku();
 	}
@@ -66,11 +72,13 @@ void menu_klasa::enter(void) {
 	else if (indeks1 == mnu::nowa_gra && indeks2 == 2) {
 		
 		GRA->start_gry(poziom_trudnosci);
+		GRA->get_nickname(nick);
 	}
 
-	if (indeks1 == mnu::pomoc && indeks2 == 0) {
+	else if (indeks1 == mnu::pomoc && indeks2 == 0) {
 		indeks2 = 1;
 		GRA->wyswietl_pomoc(OKNO);
+		OKNO->display();
 	}
 	else if (indeks1 == mnu::pomoc && indeks2 == 1) {
 		indeks2 = 0;
@@ -78,9 +86,12 @@ void menu_klasa::enter(void) {
 	}
 
 
-	if (indeks1 == mnu::ranking && indeks2 == 0) {
+	else if (indeks1 == mnu::ranking && indeks2 == 0) {
 		indeks2 = 1;
-		GRA->wyswietl_ranking(OKNO);
+		//GRA->wyswietl_ranking(OKNO);
+		rysuj_ranking();
+		OKNO->display();
+		
 	}
 	else if (indeks1 == mnu::ranking && indeks2 == 1) {
 		indeks2 = 0;
@@ -241,7 +252,8 @@ void menu_klasa::rysuj_wybor_trudnosci(void) {
 }
 
 void menu_klasa::menu_reset(void) {
-	this->indeks1 = 0;
+	this->indeks1 = -1;
+
 	this->indeks2 = 0;
 }
 

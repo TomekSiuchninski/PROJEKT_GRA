@@ -2,6 +2,13 @@
 
 #include <SFML/Graphics.hpp>
 
+namespace idx {
+	enum { menu, gra, stop, escape, leave, end };
+}
+namespace platforma_status {
+	enum{przyklejona,lot};
+}
+
 class gra_klasa{
 public:
 	gra_klasa();
@@ -20,6 +27,7 @@ public:
 	int start;
 	void start_gry(int trudnosc);
 	void Escape(void);
+	void get_nickname(std::string nickname);
 private:
 	sf::RenderWindow* OKNO;
 	int czas_gry;

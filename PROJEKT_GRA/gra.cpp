@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cmath>
 
+#include "ranking.h"
+
 #define WINDOW_X 1050
 #define WINDOW_Y 720
 #define BALL_R 15
@@ -123,7 +125,7 @@ void pilka::kolizja(void) {
 	}
 	if (this->y > WINDOW_Y) {
 		//this->vel.y = -this->vel.y;
-		blocks[PLATFORMA].status = 0;
+		blocks[PLATFORMA].status = platforma_status::przyklejona;
 		blocks[PLATFORMA].life--;
 	}
 }
@@ -154,7 +156,7 @@ void blok::rysuj(sf::RenderWindow& window) {
 }
 
 void gra_klasa::update(sf::RenderWindow& window) {
-	if(start == 1) czas_gry++;
+	if(start == idx::gra) czas_gry++;
 	blocks[PLATFORMA].tx.loadFromFile("platforma.png");
 	blocks[PLATFORMA].spr.setTexture(blocks[PLATFORMA].tx);
 	blocks[PLATFORMA].sety(600);
@@ -163,7 +165,7 @@ void gra_klasa::update(sf::RenderWindow& window) {
 
 	//std::cout << blocks[PLATFORMA].status << std::endl;
 
-	if (blocks[PLATFORMA].status == 0) {
+	if (blocks[PLATFORMA].status == platforma_status::przyklejona) {
 		ball.x = blocks[PLATFORMA].x + PLATFORMA_X / 2 - BALL_R;
 		ball.y = blocks[PLATFORMA].y - 2*BALL_R;
 		//std::cout << (WINDOW_X / 2 - (blocks[PLATFORMA].x + PLATFORMA_X / 2 - BALL_R)) << std::endl;
@@ -286,10 +288,11 @@ void gra_klasa::display(sf::RenderWindow& window) {
 	text.setPosition(1085, 120);
 	text.setString(t);
 	OKNO->draw(text);
+	
 
-
-	if (start == 2) wyswietl_pomoc(OKNO);
-	if (start == 3) wyswietl_escape(OKNO);
+	if (start == idx::stop) wyswietl_pomoc(OKNO);
+	if (start == idx::escape) wyswietl_escape(OKNO);
+	if (start == idx::end) rysuj_ranking();
 }
 
 void gra_klasa::prawo(void) {
@@ -317,15 +320,14 @@ void gra_klasa::Escape(void) {
 }
 void gra_klasa::enter(void) {
 
-	if (start == 3) {
-		start = 4;
-		
+	if (start == idx::escape) {
+		start = idx::leave;
 	}
 	std::cout << start << std::endl;
 }
 
 void gra_klasa::space(void) {
-	if (blocks[PLATFORMA].status == 0 && blocks[PLATFORMA].life>=0 ) blocks[PLATFORMA].status = 1;
+	if (blocks[PLATFORMA].status == platforma_status::przyklejona && blocks[PLATFORMA].life>=0 ) blocks[PLATFORMA].status = platforma_status::lot;
 }
 
 void gra_klasa::wyswietl_pomoc(sf::RenderWindow* window) {
@@ -437,16 +439,16 @@ void gra_klasa::on(int st) {
 
 
 void gra_klasa::F1(void) {
-	if (start == 1) {
-		this->start = 2;
+	if (start == idx::gra) {
+		this->start = idx::stop;
 		ball.vel_mem = ball.vel;
 		ball.vel.x = 0;
 		ball.vel.y = 0;
 		blocks[PLATFORMA].x_mem = blocks[PLATFORMA].x;
 		blocks[PLATFORMA].y_mem = blocks[PLATFORMA].y;
 	}
-	else if (start == 2) {
-		this->start = 1;
+	else if (start == idx::stop) {
+		this->start = idx::gra;
 		ball.vel = ball.vel_mem;
 		blocks[PLATFORMA].x = blocks[PLATFORMA].x_mem;
 		blocks[PLATFORMA].y = blocks[PLATFORMA].y_mem;
@@ -455,10 +457,11 @@ void gra_klasa::F1(void) {
 	
 }
 
-// 0 - menu    1 - gra    2 - stop 3- escape
 
+int trud;
 void gra_klasa::start_gry(int trudnosc) {
-	on(1);
+	trud = trudnosc;
+	on(idx::gra);
 	czas_gry = 0;
 	blocks[0].max_life = trudnosc+2;
 
@@ -481,7 +484,7 @@ void gra_klasa::start_gry(int trudnosc) {
 			blocks[i].spr.setPosition(blocks[i].getx(), blocks[i].gety());
 			blocks[i].spr_br.setPosition(blocks[i].getx(), blocks[i].gety());
 			blocks[i].spr.setTexture(blocks[i].tx);
-			blocks[i].life = 2;
+			blocks[i].life = 1;
 			ball.speed = 13;
 		}
 		break;
@@ -514,12 +517,27 @@ void gra_klasa::start_gry(int trudnosc) {
 
 }
 
+std::string nick;
+
+void gra_klasa::get_nickname(std::string nickname) {
+	nick = nickname;
+}
+
 void gra_klasa::wygrana(void) {
-	on(5);
+	int pkt = 100 * blocks[PLATFORMA].life + (6000 - czas_gry) * (trud + 1) / 2;
+	dodaj(pkt, nick);
+
+	rysuj_ranking();
+	OKNO->display();
+	
+	on(idx::end);
 	std::cout << "WYGRANA" << std::endl;
 }
 
 void gra_klasa::przegrana(void) {
-	on(5);
+	on(idx::end);
+	dodaj(1, nick);
+	rysuj_ranking();
+	OKNO->display();
 	std::cout << "PRZEGRANA" << std::endl;
 }
