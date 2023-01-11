@@ -490,16 +490,16 @@ void gra_klasa::wyswietl_escape(sf::RenderWindow* window) {
 	sf::Text text;
 	text.setFont(font); // font is a sf::Font
 	text.setCharacterSize(80); // in pixels, not points!
+	
+
 	text.setFillColor(sf::Color::Green);
-
-	std::string t = "WYCHODZISZ?:";
-
-	text.setString(t);
+	text.setString("WCISNIJ ESC, BY KONTYNUOWAC");
 	text.setPosition(50, 220);
 	OKNO->draw(text);
 
-	text.setString("AUU SZLALALA");
-	text.setPosition(1280 / 2 - 10, 420);
+	text.setFillColor(sf::Color::Red);
+	text.setString("WCISNIJ ENTER, BY WYJSC");
+	text.setPosition(150, 420);
 	OKNO->draw(text);
 
 	//OKNO->display();

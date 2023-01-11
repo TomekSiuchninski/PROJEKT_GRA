@@ -34,7 +34,7 @@ void menu_klasa::up(void) {
 }
 void menu_klasa::down(void) {
 	if (indeks2 == 0) {
-		if (indeks1 < 4) indeks1++;
+		if (indeks1 < idx::leave) indeks1++;
 		std::cout << indeks1;
 		wyswietl_menu();
 	}
