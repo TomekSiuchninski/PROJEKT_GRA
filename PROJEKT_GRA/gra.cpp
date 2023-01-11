@@ -106,21 +106,38 @@ void pilka::kolizja(void) {
 			y2 = blocks[PLATFORMA].y + PLATFORMA_Y;
 		}
 		if((cx + this->vel.x + BALL_R >= x1 && cx + this->vel.x - BALL_R <= x2) && (cy + this->vel.y + BALL_R >= y1 && cy + this->vel.y - BALL_R <= y2) && (blocks[i].life || i==PLATFORMA)) {
+			if (i != PLATFORMA) {
+				std::cout << "Kolizja" << i;
+				if ((cx + BALL_R < blocks[i].x) && (cx + this->vel.x + BALL_R >= blocks[i].x)) {
+					this->vel.x = -this->vel.x;
+				}
+				if ((cx - BALL_R > x2 && cx + this->vel.x - BALL_R <= x2)) {
+					this->vel.x = -this->vel.x;
+				}
+				if (cy + BALL_R < y1 && cy + this->vel.y + BALL_R >= y1) {
+					this->vel.y = -this->vel.y;
+				}
+				if (cy - BALL_R > y2 && cy + this->vel.y - BALL_R <= y2) {
+					this->vel.y = -this->vel.y;
+				}
+				if (i != PLATFORMA) blocks[i].life--;
+			}
+			else {
+				if ((cx + BALL_R < blocks[i].x) && (cx + this->vel.x + BALL_R >= blocks[i].x)) {
+					this->vel.x = -this->vel.x;
+				}
+				if ((cx - BALL_R > x2 && cx + this->vel.x - BALL_R <= x2)) {
+					this->vel.x = -this->vel.x;
+				}
+				if (cy + BALL_R < y1 && cy + this->vel.y + BALL_R >= y1) {
+					float v = sqrt(this->vel.y * this->vel.y + this->vel.x * this->vel.x);
+					this->vel.x = 20*(cx-(x1+x2)/2)/PLATFORMA_X;
+					this->vel.y = -sqrt(v * v - this->vel.x * this->vel.x);
+				}
 
-			std::cout << "Kolizja"<<i;
-			if ((cx + BALL_R < blocks[i].x) && (cx + this->vel.x + BALL_R >= blocks[i].x)) {
-				this->vel.x = -this->vel.x;
 			}
-			if ((cx - BALL_R > x2 && cx + this->vel.x - BALL_R <= x2)) {
-				this->vel.x = -this->vel.x;
-			}
-			if (cy + BALL_R < y1 && cy + this->vel.y + BALL_R >= y1) {
-				this->vel.y = -this->vel.y;
-			}
-			if (cy - BALL_R > y2 && cy + this->vel.y - BALL_R <= y2) {
-				this->vel.y = -this->vel.y;
-			}
-			if(i!=PLATFORMA) blocks[i].life--;
+
+			
 		}
 	}
 	if (this->y > WINDOW_Y) {
@@ -337,27 +354,85 @@ void gra_klasa::wyswietl_pomoc(sf::RenderWindow* window) {
 		// error...
 	}
 
-	sf::Sprite tlo;
+	sf::Sprite spr;
 	sf::Texture tx;
+
 	tx.loadFromFile("main.png");
-	tlo.setTexture(tx);
+	spr.setTexture(tx);
+
 
 	OKNO->clear();
-	OKNO->draw(tlo);
+	OKNO->draw(spr);
 	sf::Text text;
 	text.setFont(font); // font is a sf::Font
-	text.setCharacterSize(50); // in pixels, not points!
-	text.setFillColor(sf::Color::Blue);
-
-	std::string t = "HIHIHI:";
-
-	text.setString(t);
-	text.setPosition(1080 / 2 - t.size() * 12, 220);
+	text.setCharacterSize(70); // in pixels, not points!
+	text.setFillColor(sf::Color(251,87,17));
+	text.setString("WCISNIJ F1, ABY KONTYNUOWAC");
+	text.setPosition(115, 580);
 	OKNO->draw(text);
 
-	text.setString("POMOC AJAJAJ");
-	text.setPosition(1280 / 2 - 10, 320);
-	OKNO->draw(text);
+	sf::Sprite spr2;
+	sf::Texture tx2;
+	tx2.loadFromFile("platforma.png");
+	spr2.setTexture(tx2);
+	spr2.setPosition(100, 100);
+	OKNO->draw(spr2);
+
+	sf::Sprite spr3;
+	sf::Texture tx3;
+	tx3.loadFromFile("pilka.png");
+	spr3.setTexture(tx3);
+	spr3.setPosition(180, 64);
+	OKNO->draw(spr3);
+
+
+	sf::Text text2;
+	text2.setFont(font); // font is a sf::Font
+	text2.setCharacterSize(50); // in pixels, not points!
+	text2.setFillColor(sf::Color(1, 240, 60));
+	text2.setString("Aby rozpoczac, wcisnij spacje");
+	text2.setPosition(400, 100);
+	OKNO->draw(text2);
+
+	sf::Text text3;
+	text3.setFont(font); // font is a sf::Font
+	text3.setCharacterSize(50); // in pixels, not points!
+	text3.setFillColor(sf::Color(184, 177, 54));
+	text3.setString("<- Steruj platforma przy pomocy strzalek ->");
+	text3.setPosition(80, 200);
+	OKNO->draw(text3);
+
+	sf::Text text4;
+	text4.setFont(font); // font is a sf::Font
+	text4.setCharacterSize(80); // in pixels, not points!
+	text4.setFillColor(sf::Color(193, 20, 20));
+	text4.setString("ZNISZCZ JE WSZYSTKIE!");
+	text4.setPosition(200, 330);
+	OKNO->draw(text4);
+
+	sf::Sprite bl1;
+	sf::Texture bltx1;
+	bltx1.loadFromFile("blok_drewno.png");
+	bl1.setTexture(bltx1);
+	bl1.setPosition(240, 450);
+	bl1.setScale(2, 2);
+	OKNO->draw(bl1);
+
+	sf::Sprite bl2;
+	sf::Texture bltx2;
+	bltx2.loadFromFile("blok_kamien.png");
+	bl2.setTexture(bltx2);
+	bl2.setPosition(540, 450);
+	bl2.setScale(2, 2);
+	OKNO->draw(bl2);
+
+	sf::Sprite bl3;
+	sf::Texture bltx3;
+	bltx3.loadFromFile("blok_metal.png");
+	bl3.setTexture(bltx3);
+	bl3.setPosition(840, 450);
+	bl3.setScale(2, 2);
+	OKNO->draw(bl3);
 
 	//OKNO->display();
 	//GRA->update(*OKNO);
@@ -484,7 +559,7 @@ void gra_klasa::start_gry(int trudnosc) {
 			blocks[i].spr.setPosition(blocks[i].getx(), blocks[i].gety());
 			blocks[i].spr_br.setPosition(blocks[i].getx(), blocks[i].gety());
 			blocks[i].spr.setTexture(blocks[i].tx);
-			blocks[i].life = 1;
+			blocks[i].life = 2;
 			ball.speed = 13;
 		}
 		break;
@@ -524,7 +599,7 @@ void gra_klasa::get_nickname(std::string nickname) {
 }
 
 void gra_klasa::wygrana(void) {
-	int pkt = 100 * blocks[PLATFORMA].life + (6000 - czas_gry) * (trud + 1) / 2;
+	int pkt = 100 * blocks[PLATFORMA].life + (9000 - czas_gry) * (trud + 1) / 2;
 	dodaj(pkt, nick);
 
 	rysuj_ranking();

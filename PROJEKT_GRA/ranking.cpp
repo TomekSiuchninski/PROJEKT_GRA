@@ -11,12 +11,22 @@ sf::RenderWindow* OKNO;
 
 class rank {
 public:
+	rank();
+	rank(std::string nick, int pkt, std::string data);
 	std::string nick;
 	int pkt;
 	std::string data;
 };
 
+rank::rank() {
 
+}
+
+rank::rank(std::string nick, int pkt, std::string data) {
+	this->nick = nick;
+	this->pkt = pkt;
+	this->data = data;
+}
 
 void zapisz(rank* dodany) {
 
@@ -58,10 +68,8 @@ void dodaj(int pkty, std::string nickname) {
 	//std::cout << nickname;
 
 
-	rank nowy;
-	nowy.pkt = pkty;
-	nowy.nick = nickname;
-	nowy.data = dat;
+	rank nowy(nickname, pkty, dat);
+
 
 	zapisz(&nowy);
 

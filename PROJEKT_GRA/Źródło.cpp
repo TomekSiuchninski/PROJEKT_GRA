@@ -10,10 +10,16 @@
 
 #include "ranking.h"
 
+
+
+
 int main()
 {
+	
+
 	keyboard keyboard_;
 	menu_klasa menu_;
+
 	//void(keyboard:: * wsk_klaw)(sf::Event, menu_klasa*);
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "GIERECZKA TOMECZKA");
 	gra_klasa gra;
@@ -25,6 +31,7 @@ int main()
 	
 	sf::Clock zegar;
 	sf::Clock zegar2;
+
 
 
 
@@ -59,7 +66,6 @@ int main()
 				window.clear();
 				gra.display(window);
 				window.display();
-
 			}
 		}
 	}
